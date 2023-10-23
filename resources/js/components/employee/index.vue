@@ -21,7 +21,6 @@
                   <h3 class="card-title">&nbsp;</h3>
                 </div>
                 <div class="card-body">
-
                   <form class="user" enctype="multipart/form-data">
                     <div class="row">
                       <div class="col-sm-2">
@@ -51,7 +50,11 @@
                       <div class="col-sm-5">
                         <div class="form-group">
                           <label>Stations</label>
-                            <multiselect v-model="filter.stns" :multiple="true" :options="myOptions"></multiselect>
+                          <multiselect
+                            v-model="filter.stns"
+                            :multiple="true"
+                            :options="myOptions"
+                          ></multiselect>
                         </div>
                       </div>
                       <div class="col-sm-3">
@@ -82,98 +85,91 @@
                       </div>
                     </div>
 
-                   
                     <!-- <progressBar :getStatus="showProgress"></progressBar> -->
-                    <!-- <table v-if="filter.doctors != 'All'" class="table">
-                      <thead>
-                        <tr>
-                          <th>Patient</th>
-                          <th>Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="e in results">
-                          <td>
-                            {{ e.name }}
-                          </td>
-                          <td>
-                            {{ e.dates }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-
-                    <table v-else class="table">
-                      <thead>
-                        <tr>
-                          <th>Nephrologist</th>
-                          <th># of Sessions</th>
-                          <th>Amount</th>
-                          <th>Total Amount</th>
-                          <th>Less WTX</th>
-                          <th>Net</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="e in results">
-                          <td>
-                            {{ e.name }}
-                          </td>
-                          <td>
-                            {{ e.session }}
-                          </td>
-                          <td>150</td>
-                          <td>
-                            {{ e.total_amount }}
-                          </td>
-                          <td>
-                            {{ e.less_wtx }}
-                          </td>
-                          <td>
-                            {{ e.net }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table> -->
                   </form>
 
+                  <!-- <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Station</th>
+                        <th>Bed Capacity</th>
+                        <th>Occupied Beds</th>
+                        <th>Occupancy Rate</th>
+                        <th>ALOS</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr v-for="e in census_results">
+                        <td>
+                          {{ e.date }}
+                        </td>
+                        <td>
+                          {{ e.station }}
+                        </td>
+                        <td>
+                          {{ e.bedCapacity }}
+                        </td>
+                        <td>
+                          {{ e.occupiedBeds }}
+                        </td>
+                        <td>
+                          {{ e.occupanyRate }}
+                        </td>
+                        <td>
+                          {{ e.alos }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table> -->
 
                   <table class="table">
-                      <thead>
-                        <tr>
-                          <th>Date</th>
-                          <th>Station</th>
-                          <th>Bed Capacity</th>
-                          <th>Occupied Beds</th>
-                          <th>Occupancy Rate</th>
-                          <th>ALOS</th>
-                        </tr>
-                      </thead>
+                    <thead>
+                      <tr>
+                        <th>Station</th>
+                      </tr>
+                    </thead>
 
-                      <tbody>                   
-                        <tr v-for="e in census_results">                    
-                          <td>
-                            {{ e.date }}
-                          </td>
-                          <td>
-                            {{ e.station }}
-                          </td>
-                          <td>
-                            {{ e.bedCapacity }}
-                          </td>
-                          <td>
-                            {{ e.occupiedBeds }}
-                          </td>
-                          <td>
-                            {{ e.occupanyRate }}
-                          </td>
-                          <td>
-                            {{ e.alos }}
-                          </td>
-                        </tr>
-                      </tbody>
-                      
-                    </table>
+                    <tbody>
+                      <tr v-for="e in census_results">
+                        <td>
+                          {{ e.station }}
+                        </td>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Date</th>
+                              <th>Bed Capacity</th>
+                              <th>Occupied Beds</th>
+                              <th>Occupancy Rate</th>
+                              <th>ALOS</th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            <tr v-for="f in e.station_detail">
+                              <td>
+                                {{ f.date }}
+                              </td>
+                              <td>
+                                {{ f.bedCapacity }}
+                              </td>
+                              <td>
+                                {{ f.occupiedBeds }}
+                              </td>
+                              <td>
+                                {{ f.occupanyRate }}
+                              </td>
+                              <td>
+                                {{ f.alos }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </tr>
+                    </tbody>
+                  </table>
 
                   <div id="loader" :class="{ 'd-none': isHidden }"></div>
                   <nav aria-label="Page navigation example" class="to-right">
@@ -206,7 +202,7 @@ import Select2 from "v-select2-component";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.min.css";
 export default {
-  components: { Datepicker,Select2, Multiselect },
+  components: { Datepicker, Select2, Multiselect },
   created() {
     if (!User.loggedIn()) {
       this.$router.push({ name: "/" });
@@ -230,7 +226,7 @@ export default {
       searchTerm: "",
       countRecords: 0,
       showing: "",
-      census_results: []
+      census_results: [],
     };
   },
   computed: {
@@ -250,7 +246,7 @@ export default {
           });
         })
         .catch((error) => console.log(error));
-    },    
+    },
     showReport() {
       /* this.filter.fdate = moment.utc(this.filter.fdate).utcOffset("+08:00").format();
       this.filter.tdate = moment.utc(this.filter.tdate).utcOffset("+08:00").format();
@@ -258,9 +254,9 @@ export default {
       axios
         .post("/api/getCensus", this.filter)
         .then((response) => {
-          this.census_results = response.data.data
-          console.log(response.data)
-          console.log(this.census_results)
+          this.census_results = response.data.data;
+          console.log(response.data);
+          console.log(this.census_results);
           /* this.getTotalSession = response.data.sessions;
           this.results = response.data.data;
           this.export = response.data.export;

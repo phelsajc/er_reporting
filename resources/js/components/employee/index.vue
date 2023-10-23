@@ -127,14 +127,14 @@
                   <table class="table">
                     <thead>
                       <tr>
-                        <th>Station</th>
+                        <th>Stations</th>
                       </tr>
                     </thead>
 
                     <tbody>
                       <tr v-for="e in census_results">
                         <td>
-                          {{ e.station }}
+                          <strong>{{ e.station }}</strong>
                         </td>
                         <table class="table">
                           <thead>

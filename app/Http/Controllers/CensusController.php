@@ -15,7 +15,7 @@ class CensusController extends Controller
         $length = 10;
         $start = $request->start ? $request->start : 0;
         $station = $request->stns;
-        $stnArrToStr = ''; 
+        $stnArrToStr = '';
         foreach ($station as $key => $value) {
             $stnArrToStr .= "'" . $value . "',";
         }
@@ -45,34 +45,26 @@ class CensusController extends Controller
            group by 1,3");
 
             $getAlos = array();
-
-            
             $countAlos = 0;
             foreach ($subQuery as $xkey => $xvalue) {
-
                 $explode_dt = explode("|", $xvalue->reg_dt_list);
                 foreach ($explode_dt as $skey => $svalue) {
-                    if(date_format(date_create($xvalue->created_dt), 'Y-m-d')==date_format(date_create($value->created_dt), 'Y-m-d')){
-                        $getAlosX = array();
-                         $now = time();
-                         $your_date = strtotime($svalue);
-                         $datediff = $now - $your_date;
-                         $c = round($datediff / (60 * 60 * 24));
-                         $countAlos += $c;
-                         $getAlos[] =  $countAlos ;
+                    if (date_format(date_create($xvalue->created_dt), 'Y-m-d') == date_format(date_create($value->created_dt), 'Y-m-d')) {
+                        $now = time();
+                        $your_date = strtotime($svalue);
+                        $datediff = $now - $your_date;
+                        $c = round($datediff / (60 * 60 * 24));
+                        $countAlos += $c;
+                        $getAlos[] =  $countAlos;
                     }
                 }
             }
-
-
-
             $formula = $countAlos / $value->totalstn;
             $arr['alos'] = number_format((float)$formula, 2, '.', '');
             $arr['formula'] = $countAlos;
             $arr['alos2'] = $getAlos;
             $data_array[] = $arr;
         }
-
         $datasets["data"] = $data_array;
         return response()->json($datasets);
     }
@@ -86,7 +78,6 @@ class CensusController extends Controller
             $arr['station'] =  $value->station;
             $returnStn[] = $arr;
         }
-
         $datasets["data"] = $returnStn;
         return response()->json($datasets);
     }

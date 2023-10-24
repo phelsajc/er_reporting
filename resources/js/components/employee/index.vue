@@ -54,6 +54,7 @@
                             v-model="filter.stns"
                             :multiple="true"
                             :options="myOptions"
+                            @select="onSelect"
                           ></multiselect>
                         </div>
                       </div>
@@ -165,6 +166,23 @@
                                 {{ f.alos }}
                               </td>
                             </tr>
+                            <tr>
+                              <td>
+                               
+                              </td>
+                              <td>
+                              
+                              </td>
+                              <td>
+                               
+                              </td>
+                              <td>
+                                {{ e.total }}
+                              </td>
+                              <td>
+                                
+                              </td>
+                            </tr>
                           </tbody>
                         </table>
                       </tr>
@@ -237,6 +255,9 @@ export default {
     },
   },
   methods: {
+    onSelect(value){
+      console.log(value)
+    },
     getStns() {
       axios
         .get("/api/getSDtations")

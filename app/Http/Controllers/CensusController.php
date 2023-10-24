@@ -14,14 +14,18 @@ class CensusController extends Controller
         date_default_timezone_set('Asia/Manila');
         $length = 10;
         $start = $request->start ? $request->start : 0;
-        //$station = $request->stns;
-        $station = DB::connection('pgsql')->select("select station from census group by station");
+        $station = $request->stns;
         $stnArrToStr = '';
-        foreach ($station as $key => $valueStn) {
-            /* if($valueStn->station=='PEDIA WARD'){
-                $stnArrToStr .= "'" .'STATION 4' . "',";
-            } */
-            $stnArrToStr .= "'" . $valueStn->station . "',";
+        if(sizeof($request->stns)==1){
+            $station = DB::connection('pgsql')->select("select station from census group by station");
+            foreach ($station as $key => $valueStn) {
+                $stnArrToStr .= "'" . $valueStn->station . "',";
+            }
+        }else{
+
+            foreach ($station as $key => $valueStn) {
+                $stnArrToStr .= "'" . $valueStn . "',";
+            }
         }
         /*  return response()->json($stnArrToStr); */
         $fdate = date_format(date_create($request->fdate), 'Y-m-d');
@@ -33,13 +37,17 @@ class CensusController extends Controller
         } else {
             $data = DB::connection('pgsql')->select("SELECT count(station) as totalstn,station,created_dt from census group by station,created_dt LIMIT $length");
         }
+
         $data_array = array();
+        $arr3 = array();
+
         foreach ($data as $key => $value2) {            
             $data_query2 = DB::connection('pgsql')->select("SELECT count(station) as totalstn,station,created_dt from census where station = '$value2->station' and  
             date(created_dt) between '$fdate' and '$tdate' group by station,created_dt LIMIT $length offset $start");            
             $data_array2 = array();
             $arr = array();
             $arr2 = array();
+            $getTotalOccupancyRate = 0;
             foreach ($data_query2 as $key => $value) {
                 $getCapacity = BedCapacity::where(['station' => $value2->station])->first();
                 if($getCapacity!=null){
@@ -49,7 +57,9 @@ class CensusController extends Controller
                     $arr2['bedCapacity'] = $getCapacity->capacity;
                     $arr2['occupiedBeds'] = $value->totalstn;
                     $occupany_rate =  ($value->totalstn / $getCapacity->capacity) * 100;
-                    $arr2['occupanyRate'] = number_format((float)$occupany_rate, 2, '.', '');
+                    $perOccupanyRate = number_format((float)$occupany_rate, 2, '.', '').'%';
+                    $arr2['occupanyRate'] = $perOccupanyRate;
+                    $getTotalOccupancyRate+=(float)$perOccupanyRate;
                     $subQuery = DB::connection('pgsql')->select("SELECT created_dt,STRING_AGG(cast (registrydate as text), '|') AS reg_dt_list,station 
                     from census  where station = '$value2->station'
                         and date(created_dt) between '$fdate' and '$tdate'
@@ -74,11 +84,22 @@ class CensusController extends Controller
                     $arr2['alos'] = number_format((float)$formula, 2, '.', '');
                     $arr2['formula'] = $countAlos;
                     $arr2['alos2'] = $getAlos;
+
+                    
+
                     $data_array2[] = $arr2;
+
+                    
+
                     $arr['station_detail'] = $data_array2;
                 }
             }
+
+            //$arr['total'] =  $arr2;
             if($arr){
+                $arr2['occupanyRate'] = '9999%';
+                $GrandTotal =  $getTotalOccupancyRate/sizeof($data_query2);
+                $arr['total'] =  number_format((float)$GrandTotal, 2, '.', '').'%';//'9999%';//$arr3;
                 $data_array[] = $arr;
             }
             /* 
@@ -133,6 +154,8 @@ class CensusController extends Controller
                 $data_array[] = $arr; 
             */
         }
+
+        $datasets["stns"] = sizeof($request->stns);
         $datasets["data"] = $data_array;
         return response()->json($datasets);
     }

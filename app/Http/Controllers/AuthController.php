@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use DB;
 use Illuminate\Http\Request;
 use App\User;
+use App\Model\Logs;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,7 @@ class AuthController extends Controller
      *
       * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login2(Request $request)
     {
         $validateData = $request->validate([
             'username' => 'required',
@@ -112,10 +113,11 @@ class AuthController extends Controller
         return $this->login($request);
     }
 
-    public function login2(Request $request)
-{
+    public function login(Request $request)
+    {
    
 
+    date_default_timezone_set('Asia/Manila');
 	$this->validate($request, [
 		'username' => 'required',
 		'password' => 'required'
@@ -147,6 +149,7 @@ class AuthController extends Controller
 				'cfgarcia' =>'006237',
 				'rcmoncatar' => '006342',
 				'rmpesca' => '006369',	
+                'jmdquiatchon' => '006593',
 				'jclucasan' => '006563',
 			);
 
@@ -163,12 +166,26 @@ class AuthController extends Controller
                 $user->password = Hash::make($request->password);
                 $user->save();
                 $token = auth()->attempt($credentials);
+
+                $user = new Logs;
+                $user->idno =  $idno;
+                $user->name =  ucwords($communicator_data[0]->firstname.' '.$communicator_data[0]->lastname);;
+                $user->ipaddress = Request::ip();
+                $user->date_attemp =  date("Y-m-d H:i:s");
+                $user->save();
         }else{
             $token = auth()->attempt($credentials);
+
+            $user = new Logs;
+            $user->idno =  $checkUser->username;
+            $user->name =  $checkUser->name;
+            $user->ipaddress = $request->ip();
+            $user->date_attempt =  date("Y-m-d H:i:s");
+            $user->save();
         }
-			@ldap_close($ldap);
-            return $this->respondWithToken($token);			
-		}
+		@ldap_close($ldap);
+        return $this->respondWithToken($token);			
+	}
 		
      else {
 		@ldap_close($ldap);

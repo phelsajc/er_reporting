@@ -283,16 +283,17 @@ export default {
         .catch((error) => console.log(error));
     },
     showReport() {
-      console.log(this.filter.stns)
-      if(this.filter.stns==null&&this.filter.fdate==null&&this.filter.tdate==null){
+      console.log(this.filter.stns.length)
+      //if(this.filter.stns.length==0&&this.filter.fdate==null&&this.filter.tdate==null){
+      if(this.filter.stns.length==0||this.filter.fdate==null||this.filter.tdate==null){
+      //if(true&&false&&false){
         
           Toast.fire({
             icon: "error",
             title: "Check fields",
           });
-          return true;
-      }
-       
+      }else{
+      console.log(111)
       axios .post("/api/getCensus", this.filter)
         .then((response) => {
           this.census_results = response.data.data;
@@ -311,6 +312,8 @@ export default {
             });
           }
         });
+      }
+       
     },
     generate() {
       console.log(this.myValue);

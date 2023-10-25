@@ -241,7 +241,7 @@ export default {
       hasError: false,
       isHidden: true,
       filter: {
-        stns: null,
+        stns: [],
         tdate: null,
         fdate: null,
       },
@@ -264,7 +264,7 @@ export default {
       if(value=="All"){
       console.log(value)
         this.filter.stns = []
-       this.filter.stns = 'All'
+       this.filter.stns =['All']
       }else{
         var index = this.filter.stns.indexOf("All");
         if (index !== -1) {
@@ -283,21 +283,19 @@ export default {
         .catch((error) => console.log(error));
     },
     showReport() {
-      /* this.filter.fdate = moment.utc(this.filter.fdate).utcOffset("+08:00").format();
-      this.filter.tdate = moment.utc(this.filter.tdate).utcOffset("+08:00").format();
-      this.progressStatus = false; */
-      axios
-        .post("/api/getCensus", this.filter)
+      console.log(this.filter.stns)
+      if(this.filter.stns==null&&this.filter.fdate==null&&this.filter.tdate==null){
+        
+          Toast.fire({
+            icon: "error",
+            title: "Check fields",
+          });
+          return true;
+      }
+       
+      axios .post("/api/getCensus", this.filter)
         .then((response) => {
           this.census_results = response.data.data;
-          console.log(response.data);
-          console.log(this.census_results);
-          /* this.getTotalSession = response.data.sessions;
-          this.results = response.data.data;
-          this.export = response.data.export;
-          this.getMonthTitle = response.data.month;
-          this.month = moment(this.filter.date).format("MMMM YYYY"); */
-          //this.month = moment.utc(this.filter.date).utcOffset('+08:00').format(); // '+08:00' represents the UTC offset for Asia/Manila
           Toast.fire({
             icon: "success",
             title: "Saved successfully",

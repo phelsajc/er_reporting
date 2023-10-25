@@ -18,28 +18,28 @@
                         <router-link to="/all_employee" class="collapse-item">
                             <a href="#" class="nav-link" id="revenuemenu" :class="{ 'active': this.$route.name == 'all_employee' }">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Patients</p>
+                                <p>Census</p>
                             </a> 
                         </router-link>
                     </li>
 
-                    <li class="nav-item" v-if="UserType=='Administrator'||UserType=='Staff'">
+                    <!-- <li class="nav-item" v-if="UserType=='Administrator'||UserType=='Staff'">
                         <router-link to="/userslist" class="collapse-item">
                             <a href="#" class="nav-link" id="usermenu" :class="{ 'active': this.$route.name == 'userslist' || this.$route.name == 'usersadd' }">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Users</p>
                             </a> 
                         </router-link>
-                    </li>
+                    </li> -->
 
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <router-link to="/profile" class="collapse-item">
                             <a href="#" class="nav-link" id="usermenu" :class="{ 'active': this.$route.name == 'profile'}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>My Profile</p>
                             </a> 
                         </router-link>
-                    </li>
+                    </li> -->
 
                     <li class="nav-item">
                         <router-link to="/logout" class="nav-link">

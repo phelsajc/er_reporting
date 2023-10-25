@@ -1,7 +1,6 @@
 <template>
   <div class="hold-transition login-page">
     <div class="login-box">
-      <!-- /.login-logo -->
       <div class="card card-outline card-primary">
         <div class="card-header text-center">
           <a href="javascript:void(0);" class="h1"><b>Welcome User</b></a>
@@ -15,7 +14,7 @@
                 class="form-control"
                 id="exampleInputEmail"
                 aria-describedby="emailHelp"
-                placeholder="Enter Email Address"
+                placeholder="Enter ID Number"
                 v-model="form.username"
               />
               <small class="text-danger" v-if="errors.username">{{
@@ -32,7 +31,7 @@
                 type="password"
                 class="form-control"
                 id="exampleInputPassword"
-                placeholder="Password"
+                placeholder="Enter Windows Password"
                 v-model="form.password"
               />
               <small class="text-danger" v-if="errors.password">{{
@@ -50,9 +49,7 @@
             <hr />
           </form>
         </div>
-        <!-- /.card-body -->
       </div>
-      <!-- /.card -->
     </div>
   </div>
 </template>
@@ -87,12 +84,9 @@ export default {
           User.responseAfterLogin(res);
           Toast.fire({
             icon: "success",
-            title: "Signed in successfully1",
+            title: "Signed in successfully!",
           });
-          //this.$router.push({name: 'home'})
-
-          this.$router.push({ name: "all_employee" });
-          //location = "/all_employee"
+          this.$router.push({ name: "census" });
         })
         .catch((error) => (this.errors = error.response.data.errors))
         .catch(

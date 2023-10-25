@@ -27,7 +27,7 @@ class AuthController extends Controller
      *
       * @return \Illuminate\Http\JsonResponse
      */
-    public function login2(Request $request)
+    public function login(Request $request)
     {
         $validateData = $request->validate([
             'username' => 'required',
@@ -112,7 +112,7 @@ class AuthController extends Controller
         return $this->login($request);
     }
 
-    public function login(Request $request)
+    public function login2(Request $request)
 {
    
 

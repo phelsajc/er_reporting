@@ -9,7 +9,7 @@ let home = require('./components/home.vue').default
 
 //Employee Component
 let storeEmployee = require('./components/employee/create.vue').default
-let all_employee = require('./components/employee/index.vue').default
+let census = require('./components/employee/index.vue').default
 let editEmployee = require('./components/employee/edit.vue').default
 
 
@@ -34,7 +34,7 @@ export const routes = [
 
     //employee routes
     { path: '/add_employee', component: storeEmployee, name: 'storeEmployee' },
-    { path: '/all_employee', component: all_employee, name: 'all_employee' },
+    { path: '/census', component: census, name: 'census' },
     { path: '/edit-employee/:id', component: editEmployee, name: 'edit-employee' },
     { path: '/diagnose-from/:id', component: diagnose_from, name: 'diagnose-from' },
     { path: '/diagnose-from-dctr/:id', component: diagnose_from_dctr, name: 'diagnose-from-dctr' },

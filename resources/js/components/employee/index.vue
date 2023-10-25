@@ -142,7 +142,8 @@
                             <tr>
                               <th>Date</th>
                               <th>Bed Capacity</th>
-                              <th>Occupied Beds</th>
+                              <th>Regular Beds</th>
+                              <th>Bassinets</th>
                               <th>Occupancy Rate</th>
                               <th>ALOS</th>
                             </tr>
@@ -157,7 +158,10 @@
                                 {{ f.bedCapacity }}
                               </td>
                               <td>
-                                {{ f.occupiedBeds }}
+                                {{ f.occupiedBeds_2 }}
+                              </td>
+                              <td>
+                                {{ f.bassinets }}
                               </td>
                               <td>
                                 {{ f.occupanyRate }}
@@ -177,10 +181,11 @@
                                
                               </td>
                               <td>
+                              </td>
+                              <td>
                                 {{ e.total }}
                               </td>
                               <td>
-                                
                               </td>
                             </tr>
                           </tbody>
@@ -256,7 +261,16 @@ export default {
   },
   methods: {
     onSelect(value){
+      if(value=="All"){
       console.log(value)
+        this.filter.stns = []
+       this.filter.stns = 'All'
+      }else{
+        var index = this.filter.stns.indexOf("All");
+        if (index !== -1) {
+          this.filter.stns.splice(index, 1);
+        }
+      }
     },
     getStns() {
       axios

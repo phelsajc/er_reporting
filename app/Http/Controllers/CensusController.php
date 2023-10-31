@@ -40,7 +40,7 @@ class CensusController extends Controller
 
         $data_array = array();
         $arr3 = array();
-
+        $totalRegularBed = 0;
         foreach ($data as $key => $value2) {
             /* $data_query2 = DB::connection('pgsql')->select("SELECT count(station) as totalstn,station,created_dt from census where station = '$value2->station' and  
             date(created_dt) between '$fdate' and '$tdate' group by station,created_dt LIMIT $length offset $start");    */
@@ -90,18 +90,35 @@ class CensusController extends Controller
                     $arr2['regularBed'] = $value->totalstn;
 
                     $bedCapacity =  $getCapacity->capacity;
+                    //$arr2['bedCapacity'] = $bedCapacity;
+                    $getBedCap = 0;
                     //less the C here
                     //if($count_nb_with_c>=1&&($value2->station!="NURSERY"||$value2->station!="PEDIA WARD")){
                     // if($count_nb_with_c>=1&&$value2->station!="NURSERY"&&$value2->station!="PEDIA WARD"){
                     if ($count_nb_with_c >= 1 && $value2->station != "NURSERY" && $value2->station != "PEDIA WARD") {
+                         if($value2->station=="STATION 11"){
+                            //$bedCapacity = $value->totalstn - $count_nb_with_c;
+                            $nb = $value->totalstn - $count_nb_with_c;
+                            $occupany_rate =  ($value->totalstn / $bedCapacity) * 100;
+                            $perOccupanyRate = number_format((float)$occupany_rate, 2, '.', '').'%';
+                            $arr2['occupanyRate'] = $perOccupanyRate;
+                            $getTotalOccupancyRate+=(float)$perOccupanyRate;
+                            $arr2['getformula'] =  $value->totalstn .'- '.$count_nb_with_c.' ='.$bedCapacity.' '.$value->totalstn.' /'. $bedCapacity;
+                            $arr2['occupiedBeds_2'] = $nb;//$bedCapacity;
+                            $getBedCap = $bedCapacity ;
+                           $totalRegularBed+=$bedCapacity;
+                        } else{
                             //$bedCapacity = $bedCapacity - $count_nb_with_c;
                             $bedCapacity = $value->totalstn - $count_nb_with_c;
                             $occupany_rate =  ($value->totalstn / $bedCapacity) * 100;
                             $perOccupanyRate = number_format((float)$occupany_rate, 2, '.', '').'%';
                             $arr2['occupanyRate'] = $perOccupanyRate;
                             $getTotalOccupancyRate+=(float)$perOccupanyRate;
-
+                            $arr2['getformula'] =  $value->totalstn .'- '.$count_nb_with_c.' ='.$bedCapacity.' '.$value->totalstn.' /'. $bedCapacity;
                             $arr2['occupiedBeds_2'] = $bedCapacity;
+                            $getBedCap = $bedCapacity ;
+                            $totalRegularBed+=$bedCapacity;
+                        }
                     } else {
                         $occupany_rate =  ($value->totalstn / $getCapacity->capacity) * 100;
                         $perOccupanyRate = number_format((float)$occupany_rate, 2, '.', '') . '%';
@@ -109,9 +126,13 @@ class CensusController extends Controller
                         $getTotalOccupancyRate += (float)$perOccupanyRate;
 
                         $arr2['occupiedBeds_2'] = $value->totalstn;
+                        $getBedCap = $bedCapacity ;
+                        $totalRegularBed+=$value->totalstn;
                     }
 
+                    //$totalRegularBed+=$value->totalstn;
 
+                    //$totalRegularBed=$totalRegularBed+$bedCapacity;
 
                     $subQuery = DB::connection('pgsql')->select("SELECT created_dt,STRING_AGG(cast (registrydate as text), '|') AS reg_dt_list,station 
                     from census  where station = '$value2->station'
@@ -144,7 +165,6 @@ class CensusController extends Controller
                     $arr2['alos3'] = $getAlos3;
                     $arr2['alosDT'] = $getAlosDT;
                     $arr2['now'] = date('m/d/Y', time());
-
 
 
                     $data_array2[] = $arr2;
@@ -216,6 +236,7 @@ class CensusController extends Controller
         }
         $datasets["stns"] = sizeof($request->stns);
         $datasets["data"] = $data_array;
+        $datasets["totalRegularBed"] = $totalRegularBed;
         $datasets["stnArrToStr"] = $stnArrToStr;
         $datasets["Q1"] = "SELECT station from census where station in ($sql_q)  group by station";
         $datasets["Q2"] = "SELECT count(station) as totalstn,station,created_dt from census group by station,created_dt LIMIT $length";

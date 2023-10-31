@@ -28,7 +28,7 @@ class AuthController extends Controller
      *
       * @return \Illuminate\Http\JsonResponse
      */
-    public function login2(Request $request)
+    public function login(Request $request)
     {
         $validateData = $request->validate([
             'username' => 'required',
@@ -113,7 +113,7 @@ class AuthController extends Controller
         return $this->login($request);
     }
 
-    public function login(Request $request)
+    public function login2(Request $request)
     {
    
 
@@ -170,7 +170,7 @@ class AuthController extends Controller
                 $user = new Logs;
                 $user->idno =  $idno;
                 $user->name =  ucwords($communicator_data[0]->firstname.' '.$communicator_data[0]->lastname);;
-                $user->ipaddress = Request::ip();
+                $user->ipaddress = $request->ip();//Request::ip();
                 $user->date_attemp =  date("Y-m-d H:i:s");
                 $user->save();
         }else{
@@ -189,7 +189,8 @@ class AuthController extends Controller
 		
      else {
 		@ldap_close($ldap);
-		return redirect('/')->with('error','Invalid Username and Password Combination');
+		//return redirect('/')->with('error','Invalid Username and Password Combination');
+        return response()->json(['message' => 'User not found.'], 401);
 	}
 
 }

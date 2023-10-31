@@ -88,43 +88,12 @@
 
                     <!-- <progressBar :getStatus="showProgress"></progressBar> -->
                   </form>
-
-                  <!-- <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Station</th>
-                        <th>Bed Capacity</th>
-                        <th>Occupied Beds</th>
-                        <th>Occupancy Rate</th>
-                        <th>ALOS</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr v-for="e in census_results">
-                        <td>
-                          {{ e.date }}
-                        </td>
-                        <td>
-                          {{ e.station }}
-                        </td>
-                        <td>
-                          {{ e.bedCapacity }}
-                        </td>
-                        <td>
-                          {{ e.occupiedBeds }}
-                        </td>
-                        <td>
-                          {{ e.occupanyRate }}
-                        </td>
-                        <td>
-                          {{ e.alos }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table> -->
-
+                  
+                <dl class="row">
+                  <dt class="col-sm-2">Total Regular Beds:</dt>
+                  <dd class="col-sm-8">{{ getTotalBeds }}</dd>
+                </dl>
+                  
                   <table class="table">
                     <thead>
                       <tr>
@@ -189,9 +158,11 @@
                               </td>
                             </tr>
                           </tbody>
+
                         </table>
                       </tr>
                     </tbody>
+
                   </table>
 
                   <div id="loader" :class="{ 'd-none': isHidden }"></div>
@@ -249,6 +220,7 @@ export default {
       searchTerm: "",
       countRecords: 0,
       showing: "",
+      getTotalBeds: 0,
       census_results: [],
     };
   },
@@ -297,6 +269,7 @@ export default {
       axios .post("/api/getCensus", this.filter)
         .then((response) => {
           this.census_results = response.data.data;
+          this.getTotalBeds = response.data.totalRegularBed;
           Toast.fire({
             icon: "success",
             title: "Saved successfully",

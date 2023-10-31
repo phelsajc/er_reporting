@@ -1,7 +1,7 @@
 <template>
     <aside id="sidebar" class="main-sidebar sidebar-dark-primary elevation-4">
-        <router-link to="/all_employee" class="brand-link">
-            <img :src="('../../../../public/backend2/uk_logo.jpg')" alt="AdminLTE Logo"
+        <router-link to="/census" class="brand-link">
+            <img :src="('../../../../public/backend2/rmci.png')" alt="AdminLTE Logo"
                 class="brand-image img-circle elevation-3" style="opacity: 0.8" />
             <span class="brand-text font-weight-light">Census</span> <br>
         </router-link>

@@ -88,15 +88,25 @@ export default {
           });
           this.$router.push({ name: "census" });
         })
-        .catch((error) => (this.errors = error.response.data.errors))
+        .catch((error) => {
+          //if (error.response.data.message == "Token has expired") {
+            //this.$router.push({ name: "/" });
+            console.log(error)
+            Toast.fire({
+              icon: "error",
+              title: error.response.data.message,
+            });
+          //}
+        });
+        /* .catch((error) => (this.errors = error.response.data.errors))
         .catch(
           Toast.fire({
             icon: "warning",
-            title: "User Not Found!",
+            title: error.response.data.message 
           }),
 
           console.log(this.errors)
-        );
+        ); */
     },
   },
 };
